@@ -1,0 +1,96 @@
+﻿@page
+@model Web.Pages.Vehiculos.EditarModel
+@{
+}
+<h1>Editar vehiculo</h1>
+
+<form method="post">
+    <div class="form-group">
+        <label for="marcas">Marca</label>
+        <select id="marcas" asp-for="marcaseleccionada" class="form-select"
+                asp-items="Model.marcas" onchange="fectModelos()">
+            <option value="">Seleccione una marca</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="modelos">Modelo</label>
+        <select asp-for="modeloseleccionado" class="form-select" asp-items="Model.modelos" id="modelos">
+            <option value="">Seleccione un modelo</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label" asp-for="vehiculoResponse.Placa"></label>
+        <input class="form-control" asp-for="vehiculoResponse.Placa" />
+        <span class="text-danger" asp-validation-for="vehiculoResponse.Placa"></span>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label" asp-for="vehiculoResponse.Precio"></label>
+        <input class="form-control" asp-for="vehiculoResponse.Precio" />
+        <span class="text-danger" asp-validation-for="vehiculoResponse.Precio"></span>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label" asp-for="vehiculoResponse.Anio"></label>
+        <input class="form-control" asp-for="vehiculoResponse.Anio" />
+        <span class="text-danger" asp-validation-for="vehiculoResponse.Anio"></span>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label" asp-for="vehiculoResponse.Color"></label>
+        <input class="form-control" asp-for="vehiculoResponse.Color" />
+        <span class="text-danger" asp-validation-for="vehiculoResponse.Color"></span>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label" asp-for="vehiculoResponse.CorreoPropietario"></label>
+        <input class="form-control" asp-for="vehiculoResponse.CorreoPropietario" />
+        <span class="text-danger" asp-validation-for="vehiculoResponse.CorreoPropietario"></span>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label" asp-for="vehiculoResponse.TelefonoPropietario"></label>
+        <input class="form-control" asp-for="vehiculoResponse.TelefonoPropietario" />
+        <span class="text-danger" asp-validation-for="vehiculoResponse.TelefonoPropietario"></span>
+    </div>
+
+    <br />
+    <a type="button" class="btn btn-primary" asp-page="./Index">Regresar</a>
+    <button type="submit" class="btn btn-success">Guardar</button>
+</form>
+
+@section Scripts {
+    <script>
+        async function fectModelos() {
+            const marcaId = document.getElementById("marcas").value;
+            if (!marcaId) { return; }
+
+            try {
+                const respuesta = await fetch(?handler=ObtenerModelos&marcaID=${marcaId});
+                const modelos = await respuesta.json();
+                const modelosSelect = document.getElementById("modelos");
+
+                const seleccionado = "@Model.modeloseleccionado";
+
+                modelosSelect.innerHTML = '<option value="">Seleccione un modelo</option>';
+
+                modelos.forEach(modelo => {
+                    const option = document.createElement("option");
+                    option.value = modelo.id;
+                    option.text = modelo.nombre;
+
+                    if (seleccionado && seleccionado.toLowerCase() === modelo.id.toLowerCase()) {
+                        option.selected = true;
+                    }
+
+                    modelosSelect.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Error obteniendo los modelos', error);
+            }
+        }
+    </script>
+}
+

@@ -1,0 +1,88 @@
+﻿@page
+@model Web.Pages.Vehiculos.AgregarModel
+@{
+}
+<h1>Agregar Vehículo</h1>
+<div class="container">
+    <div class="col-xl-5 col-lg-6 col-md-8 col-sm-10 mx-auto">
+        <form method="post">
+            <div class=" form-group">
+                <label for="marcas">Marca</label>
+                <select asp-for="marcaseleccionada" class="form-select" asp-items="Model.marcas" id="marcas">
+                    <option value="">Seleccione una marca</option>
+                </select>
+            </div>
+            <div class=" form-group">
+                <label for="marcas">Modelo</label>
+                <select asp-for="vehiculo.IdModelo" class="form-select" asp-items="Model.modelos" id="modelos">
+                    <option value="">Seleccione una marca</option>
+                </select>
+            </div>
+            <div class=" form-group">
+                <label class="control-label" asp-for="vehiculo.Placa"></label>
+                <input class="form-control" asp-for="vehiculo.Placa">
+                <span class="text-danger" asp-validation-for="vehiculo.Placa"></span>
+            </div>
+            <div class=" form-group">
+                <label class="control-label" asp-for="vehiculo.Precio"></label>
+                <input class="form-control" asp-for="vehiculo.Precio">
+                <span class="text-danger" asp-validation-for="vehiculo.Precio"></span>
+            </div>
+            <div class=" form-group">
+                <label class="control-label" asp-for="vehiculo.Anio"></label>
+                <input class="form-control" asp-for="vehiculo.Anio">
+                <span class="text-danger" asp-validation-for="vehiculo.Anio"></span>
+            </div>
+            <div class=" form-group">
+                <label class="control-label" asp-for="vehiculo.Color"></label>
+                <input class="form-control" asp-for="vehiculo.Color">
+                <span class="text-danger" asp-validation-for="vehiculo.Color"></span>
+            </div>
+            <div class=" form-group">
+                <label class="control-label" asp-for="vehiculo.CorreoPropietario"></label>
+                <input class="form-control" asp-for="vehiculo.CorreoPropietario">
+                <span class="text-danger" asp-validation-for="vehiculo.CorreoPropietario"></span>
+            </div>
+            <div class=" form-group">
+                <label class="control-label" asp-for="vehiculo.TelefonoPropietario"></label>
+                <input class="form-control" asp-for="vehiculo.TelefonoPropietario">
+                <span class="text-danger" asp-validation-for="vehiculo.TelefonoPropietario"></span>
+            </div>
+            <div class="text-danger" asp-validation-summary="All"></div>
+            <div class=" form-group">
+                <a class="btn btn-primary" asp-page="./index">Regresar</a>
+                <input type="submit" value="Agregar" class="btn btn-success" />
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        async function fetchModelos(){
+        const marcaId = document.getElementById("marcas").value;
+        if(!marcaId) {return; }
+        try {
+        const respuesta= await fetch('?handler=ObtenerModelos&marcaId=${marcaId}')
+        const modelos= await respuesta.json();
+        const modelosSelect = document.getElementById("modelos");
+        modelosSelect.innerHTML = '<option value="">Seleccione un modelo</option>';
+        modelos.forEach(
+        modelos=>{
+        const option = document.createElement("option");
+        option.value = modelos.id;
+        option.text = modelos.nombre;
+        modelosSelect.appendChild(option)
+        }
+        )
+
+        }catch(error){
+        console.error('Error obteniendo los modelos',error);
+
+        }
+        }
+    </script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
